@@ -10,11 +10,23 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
+const movie_module_1 = require("./movie/movie.module");
+const typeorm_1 = require("@nestjs/typeorm");
+const dotenv_1 = require("dotenv");
+const review_module_1 = require("./review/review.module");
+const user_module_1 = require("./user/user.module");
+const data_source_1 = require("./db/data-source");
+(0, dotenv_1.config)();
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [],
+        imports: [
+            typeorm_1.TypeOrmModule.forRoot(data_source_1.dataSourceOptions),
+            movie_module_1.MovieModule,
+            review_module_1.ReviewModule,
+            user_module_1.UserModule,
+        ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })
