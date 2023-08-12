@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Review } from './review.entity'
 import { Repository } from 'typeorm'
-import { IReview } from './review.interface'
+import { IReview } from './interfaces/review.interface'
 
 @Injectable()
 export class ReviewService {
@@ -18,7 +18,7 @@ export class ReviewService {
   findAllReviewsByUser(user: string) {
     return this.reviewRepo
       .createQueryBuilder('review')
-      .leftJoin('review.Movie', 'movie')
+      .leftJoin('review.movie', 'movie')
       .where('review.userName = :user', { user })
       .select([
         'movie.title',
@@ -26,14 +26,14 @@ export class ReviewService {
         'movie.poster_path',
         'movie.overview',
         'review.rating',
-        'review.username',
+        'review.userName',
       ])
       .getMany()
   }
   findAllReviewsByMovie(id: number) {
     return this.reviewRepo
       .createQueryBuilder('review')
-      .leftJoin('review.Movie', 'movie')
+      .leftJoin('review.movie', 'movie')
       .where('movie.id = :id', { id })
       .select([
         'movie.title',
@@ -41,8 +41,12 @@ export class ReviewService {
         'movie.poster_path',
         'movie.overview',
         'review.rating',
-        'review.username',
+        'review.userName',
       ])
       .getMany()
+  }
+
+  findReviewByTmbdId(tmbdId: number) {
+    return this.reviewRepo.findOne({ where: { tmbdId } })
   }
 }

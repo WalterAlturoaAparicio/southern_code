@@ -19,6 +19,12 @@ export class Review {
   @Column()
   rating: number
 
+  @Column()
+  tmbdId: number
+
+  @Column()
+  movieId: number
+
   /**
    * RELATIONS
    */

@@ -1,4 +1,10 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 // import { MovieDto } from './movie.dto'
 import { ReviewService } from 'src/review/review.service'
@@ -10,7 +16,19 @@ export class MovieController {
   constructor(private readonly reviewService: ReviewService) {}
 
   @Get(':tmbdId/reviews')
-  getReviewsByMovie(@Param('id', ParseIntPipe) id: number): Promise<Review[]> {
-    return this.reviewService.findAllReviewsByMovie(id)
+  async getReviewsByMovie(
+    @Param('tmbdId', ParseIntPipe) tmbdId: number,
+  ): Promise<Review[]> {
+    try {
+      const { movieId } = await this.reviewService.findReviewByTmbdId(tmbdId)
+      if (!movieId) {
+        throw new NotFoundException(
+          `No se encontró la película con tmbdId: ${tmbdId}`,
+        )
+      }
+      return this.reviewService.findAllReviewsByMovie(movieId)
+    } catch (error) {
+      return []
+    }
   }
 }
